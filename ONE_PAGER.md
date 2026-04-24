@@ -1,6 +1,6 @@
 # ClearSight — One Pager
 
-A 5-minute at-home vision screening that turns any smartphone into a calibrated
+A 10-minute at-home vision screening that turns any smartphone into a calibrated
 acuity, contrast, and colour-vision tester, then talks the results back in
 plain English.
 
@@ -28,7 +28,7 @@ run on your sofa, with a result that is concrete enough to act on.
 
 ## Your Solution
 
-ClearSight runs a 5-test screening in roughly five minutes:
+ClearSight runs a 5-test screening in roughly ten minutes:
 
 - **Calibrate** the screen to physical millimetres using an on-screen
   reference (credit-card slider). Every subsequent stimulus is rendered in
@@ -86,17 +86,8 @@ optical retail business**, not a replacement for in-store refraction.
 
 - **Store footfall:** a user who sees "your right eye reads 6/12, estimated
   range −1.00 to −2.00 D" is materially more likely to book an in-store
-  test than one who is just told "you might want to get checked." Internal
-  benchmarks for similar online quiz-to-store funnels suggest a **2–3×
-  conversion lift** on warm leads.
-- **Home try-on assist:** the same screening can be run by a field agent
-  during an at-home try-on visit, turning a 30-minute frames consult into a
-  15-minute screening + frames consult. This unlocks the elderly and
-  mobility-restricted segment, who are otherwise underserved.
-- **Lead qualification:** the urgency tier (`urgent` / `soon` / `routine` /
-  `optional`) lets the in-store team triage walk-ins from app users —
-  red-flag cases get fast-tracked to optometrists rather than queueing
-  behind frame-shoppers.
+  test than one who is just told "you might want to get checked." 
+- **Home try-on assist:** the same screening can be tie into driving at-home test visit + frames consult. This unlocks the elderly and mobility-restricted segment, who are otherwise underserved.
 - **Cohort intelligence:** the (anonymous) screening data closes the loop
   on our diopter-to-acuity mapping. Every store-confirmed prescription
   paired with a prior ClearSight score makes the next user's estimate
