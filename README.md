@@ -323,13 +323,8 @@ store (never from GPT) and the findings cards from the sanitised
 
 ## Scripts
 
-```bash
-npm start           # expo start
-npm run ios         # expo start --ios
-npm run android     # expo start --android
-npm run web         # expo start --web
-npx tsc --noEmit    # type-check the whole project
-```
+Need Expo Go app on android to simulate on phone
+npx expo start --tunnel --clear
 
 ---
 
