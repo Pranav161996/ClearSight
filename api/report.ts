@@ -53,14 +53,22 @@ So distance vision = 2 entries (right eye, left eye).
 Near vision = 1 entry (both eyes tested together).
 Contrast and colour = 1 entry each (combined).
 
-For the contrast finding, use the payload's contrast.logCS as the result
-string (e.g. "log CS 1.65"). Interpret the flag:
-  'normal'      -> typical contrast sensitivity
-  'mild'        -> slight reduction, may notice in low light
+For the contrast finding, the result string MUST be a short, plain-English
+label — never a number or clinical unit. Map the flag exactly:
+  'normal'      -> "Normal"
+  'mild'        -> "Slightly reduced"
+  'significant' -> "Significantly reduced"
+The plain text should explain what this means in everyday language.
+Interpretation guidance for the flag:
+  'normal'      -> typical contrast sensitivity for at-home screening
+  'mild'        -> slight reduction, may notice in low light or fog
   'significant' -> meaningful loss; mention possible causes (cataract,
                    refractive error, optic nerve issues) without diagnosing.
+Do NOT mention the log CS number, "Pelli-Robson", "Weber contrast", or any
+other clinical terminology. The customer should understand the result
+without ever hearing the unit.
 If contrast.atLimit is true, add a sentence noting the patient saw every
-level we could render and the true threshold may be even lower.
+level we could render and the true threshold may be even better.
 
 Each finding object shape:
 {
@@ -100,8 +108,15 @@ const FALLBACK_REPORT: Report = {
   patternNote: 'Pattern analysis unavailable — please consult a professional.',
 };
 
+// dangerouslyAllowBrowser is required for the Expo web build because the
+// SDK refuses to initialise in a browser context by default. This is fine
+// for local LAN testing (npx serve dist) but is NOT safe for a public
+// Amplify deployment — the OpenAI key is inlined into the JS bundle and
+// anyone who opens DevTools can read it. Production should call the
+// OpenAI API from a Lambda / Worker proxy and remove this flag.
 const client = new OpenAI({
   apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true,
 });
 
 function normaliseEye(value: unknown): Eye {

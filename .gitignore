@@ -35,6 +35,9 @@ yarn-error.*
 .env.local
 .env*.local
 
+# build artefacts (may contain inlined env vars / keys)
+*.zip
+
 # typescript
 *.tsbuildinfo
 
