@@ -1,20 +1,34 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+
+import OnboardingScreen from './screens/OnboardingScreen';
+import CalibrationScreen from './screens/CalibrationScreen';
+import TestRunnerScreen from './screens/TestRunner';
+import ResultsScreen from './screens/ResultsScreen';
+import BookingScreen from './screens/BookingScreen';
+
+export type RootStackParamList = {
+  Onboarding: undefined;
+  Calibration: undefined;
+  TestRunner: undefined;
+  Results: undefined;
+  Booking: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+      <Stack.Navigator initialRouteName="Onboarding">
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="Calibration" component={CalibrationScreen} />
+        <Stack.Screen name="TestRunner" component={TestRunnerScreen} />
+        <Stack.Screen name="Results" component={ResultsScreen} />
+        <Stack.Screen name="Booking" component={BookingScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
