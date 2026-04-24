@@ -122,6 +122,10 @@ export default function AcuityTest({
   );
   const [levelHistory, setLevelHistory] = useState<number[]>([]);
   const [levelTrials, setLevelTrials] = useState<boolean[]>([]);
+  // True until the user gets a single scored trial wrong. Used to grant a
+  // "perfect run" bonus: 10-for-10 jumps straight to the table ceiling
+  // instead of being averaged down by the staircase trajectory.
+  const [allCorrect, setAllCorrect] = useState(true);
   const [gapPosition, setGapPosition] = useState(() => randomGap());
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
 
@@ -180,6 +184,8 @@ export default function AcuityTest({
     const usedLevel = currentLevel;
     const nextTrial = trialNumber + 1;
     const nextHistory = [...levelHistory, usedLevel];
+    const nextAllCorrect = allCorrect && isCorrect;
+    if (!isCorrect && allCorrect) setAllCorrect(false);
 
     const updatedLevelTrials = [...levelTrials, isCorrect];
     const correctCount = updatedLevelTrials.filter(Boolean).length;
@@ -197,18 +203,26 @@ export default function AcuityTest({
 
     timeoutRef.current = setTimeout(() => {
       if (nextTrial === TOTAL_TRIALS) {
-        const reversals = findReversals(nextHistory);
         let avgIndex: number;
-        if (reversals.length >= 2) {
-          const last = reversals.slice(-REVERSALS_TO_AVERAGE);
-          avgIndex = Math.round(
-            last.reduce((a, b) => a + b, 0) / last.length,
-          );
+        if (nextAllCorrect) {
+          // Perfect run override: every scored trial correct → reward with
+          // the table ceiling (6/4.8). The staircase trajectory would
+          // otherwise drag the average down because we run out of trials
+          // before reaching the top.
+          avgIndex = MAX_LEVEL;
         } else {
-          const last4 = nextHistory.slice(-4);
-          avgIndex = Math.round(
-            last4.reduce((a, b) => a + b, 0) / last4.length,
-          );
+          const reversals = findReversals(nextHistory);
+          if (reversals.length >= 2) {
+            const last = reversals.slice(-REVERSALS_TO_AVERAGE);
+            avgIndex = Math.round(
+              last.reduce((a, b) => a + b, 0) / last.length,
+            );
+          } else {
+            const last4 = nextHistory.slice(-4);
+            avgIndex = Math.round(
+              last4.reduce((a, b) => a + b, 0) / last4.length,
+            );
+          }
         }
         const threshold = levels[avgIndex];
         const snellen = `6/${threshold.denom}`;
