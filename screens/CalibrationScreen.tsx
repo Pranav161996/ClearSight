@@ -13,7 +13,7 @@ const ASPECT = CARD_SHORT_MM / CARD_LONG_MM;
 
 const SLIDER_MIN = 200;
 const SLIDER_MAX = 700;
-const SLIDER_INITIAL = 350;
+const SLIDER_INITIAL = 450;
 const SLIDER_TRACK_LENGTH = 360;
 
 export default function CalibrationScreen({ navigation }: Props) {
@@ -44,9 +44,7 @@ export default function CalibrationScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.instructions}>
-        Hold a standard credit card flat against the screen with the long edge
-        vertical, then drag the slider until the outline matches the card
-        height.
+        Hold a standard Credit / Debit / PAN Card flat against the screen, then drag the slider until the outline matches the card
       </Text>
 
       <View style={styles.row}>
