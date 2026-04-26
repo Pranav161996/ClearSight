@@ -225,6 +225,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 24,
+    paddingBottom: 48,
   },
 });

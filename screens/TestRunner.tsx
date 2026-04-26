@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useVideoPlayer } from 'expo-video';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../App';
 import { useSessionStore, type TestResults } from '../store/session';
@@ -10,20 +11,35 @@ import ColourTest from './ColourTest';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TestRunner'>;
 
-const FINAL_STEP = 11;
+const LANDOLT_C_VIDEO = require('../assets/Landolt C Ring Test.mov');
+
+const FINAL_STEP = 12;
 const TOTAL_TESTS = 5;
 
+// Maps step index → "Test N of 5" label. Instruction-card steps (including
+// the new Landolt-C video at index 1) are intentionally absent so the step
+// bar only shows on actual test screens.
 const TEST_STEP_TO_NUMBER: Record<number, number> = {
-  1: 1,
-  3: 2,
-  5: 3,
-  7: 4,
-  9: 5,
+  2: 1,
+  4: 2,
+  6: 3,
+  8: 4,
+  10: 5,
 };
 
 export default function TestRunnerScreen({ navigation }: Props) {
   const [step, setStep] = useState(0);
   const setTestResults = useSessionStore((s) => s.setTestResults);
+
+  // Created up front so the asset is decoded and the first frame is ready
+  // by the time the user reaches step 1. Creating the player inside
+  // InstructionCard caused a visible ~1s blank-frame delay because the
+  // hook only ran when that step mounted.
+  const landoltPlayer = useVideoPlayer(LANDOLT_C_VIDEO, (p) => {
+    p.loop = true;
+    p.muted = true;
+    p.play();
+  });
 
   const advance = () => setStep((s) => s + 1);
   const setResult = <K extends keyof TestResults>(
@@ -49,8 +65,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
           icon="👁️"
           title="Let's test your RIGHT eye"
           body={
-            "Cover your LEFT eye completely with your palm.\n\n" +
-            "You'll see a ring with a gap. Tap the segment on the bottom ring that matches where the gap is.\n\n" +
+            "Cover your other eye completely with your palm, do not press.\n\n" +
             "Hold the phone at arm's length (~60cm)."
           }
           ctaText="Start →"
@@ -59,6 +74,21 @@ export default function TestRunnerScreen({ navigation }: Props) {
       );
       break;
     case 1:
+      content = (
+        <InstructionCard
+          media={{ type: 'video', player: landoltPlayer }}
+          title="How the Landolt C test works"
+          body={
+            "You'll see a ring with a small gap on top.\n\n" +
+            "On the bottom wheel, tap the segment that points to the same side as the gap.\n\n" +
+            "Go with your first instinct — don't overthink it."
+          }
+          ctaText="Got it →"
+          onReady={advance}
+        />
+      );
+      break;
+    case 2:
       content = (
         <AcuityTest
           key="distance-right"
@@ -73,13 +103,13 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 2:
+    case 3:
       content = (
         <InstructionCard
           icon="👁️"
           title="Now test your LEFT eye"
           body={
-            "Switch — cover your RIGHT eye with your palm.\n\n" +
+            "Switch — cover your other eye with your palm.\n\n" +
             "Same task: tap where the gap is on the bottom ring.\n\n" +
             "Keep the phone at arm's length."
           }
@@ -88,7 +118,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 3:
+    case 4:
       content = (
         <AcuityTest
           key="distance-left"
@@ -103,7 +133,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 4:
+    case 5:
       content = (
         <InstructionCard
           icon="📱"
@@ -118,7 +148,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 5:
+    case 6:
       content = (
         <AcuityTest
           key="near-both"
@@ -133,7 +163,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 6:
+    case 7:
       content = (
         <InstructionCard
           icon="🌫️"
@@ -148,7 +178,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 7:
+    case 8:
       content = (
         <ContrastTest
           distanceCm={60}
@@ -161,7 +191,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 8:
+    case 9:
       content = (
         <InstructionCard
           icon="🎨"
@@ -176,7 +206,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 9:
+    case 10:
       content = (
         <ColourTest
           onComplete={(r) => {
@@ -186,7 +216,7 @@ export default function TestRunnerScreen({ navigation }: Props) {
         />
       );
       break;
-    case 10:
+    case 11:
       content = (
         <InstructionCard
           icon="✅"

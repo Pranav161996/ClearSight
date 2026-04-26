@@ -286,10 +286,10 @@ export default function AcuityTest({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.eye}>{headerLabel}</Text>
-        <Text style={styles.instruction}>
+        <Text style={[styles.instruction, { textAlign: 'center' }]}>
           {isPractice
-            ? 'Trial round — tap where the gap is'
-            : 'Which side is the gap?'}
+            ? 'Trial round — See the top ring? Mark the corresponding gap on the lower ring'
+            : 'See the top ring? Mark the corresponding gap on the lower ring'}
         </Text>
         {isPractice && (
           <Text style={styles.practiceNote}>
@@ -450,6 +450,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 24,
+    paddingBottom: 48,
   },
 });
