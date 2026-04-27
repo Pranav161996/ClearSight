@@ -7,7 +7,7 @@ import { useSessionStore, type TestResults } from '../store/session';
 import InstructionCard from '../components/InstructionCard';
 import AcuityTest from './AcuityTest';
 import ContrastTest from './ContrastTest';
-import ColourTest from './ColourTest';
+import ColourTest, { preloadColourPlates } from './ColourTest';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TestRunner'>;
 
@@ -40,6 +40,16 @@ export default function TestRunnerScreen({ navigation }: Props) {
     p.muted = true;
     p.play();
   });
+
+  // Warm the Ishihara plate cache while the user is going through the
+  // earlier tests. Plates are still rendered one at a time inside
+  // ColourTest — this only loads them into memory, nothing is shown.
+  useEffect(() => {
+    preloadColourPlates().catch(() => {
+      // Non-fatal: if preload fails, ColourTest still works, plates
+      // just load lazily as before.
+    });
+  }, []);
 
   const advance = () => setStep((s) => s + 1);
   const setResult = <K extends keyof TestResults>(

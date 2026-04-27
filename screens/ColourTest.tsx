@@ -7,6 +7,7 @@ import {
   Image,
   type ImageSourcePropType,
 } from 'react-native';
+import { Asset } from 'expo-asset';
 
 export interface ColourTestProps {
   onComplete: (colourErrors: number) => void;
@@ -29,6 +30,13 @@ const ALL_PLATES: Plate[] = [
   { answer: '8', source: require('../assets/color/8.png') },
   { answer: 'Nothing', source: require('../assets/color/Nothing.png') },
 ];
+
+// Decode all plate PNGs into the asset cache up front so the first <Image>
+// switch in the test doesn't pay the per-plate ~500ms first-render cost.
+// Safe to call multiple times — Asset.loadAsync is idempotent.
+export function preloadColourPlates(): Promise<void> {
+  return Asset.loadAsync(ALL_PLATES.map((p) => p.source)).then(() => undefined);
+}
 
 const PLATES_PER_TEST = 4;
 const OPTIONS_PER_PLATE = 4;
